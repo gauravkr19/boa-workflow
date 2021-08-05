@@ -24,6 +24,7 @@ spec:
     - name: build-image-balreader
       taskRef:
         name: jib-maven
+      runAfter: [fetch-from-git]
       params:
         - name: IMAGE
           value: $(params.image-registry)/balreader
@@ -35,6 +36,7 @@ spec:
     - name: build-image-ledgerwriter
       taskRef:
         name: jib-maven
+      runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
           value: $(params.image-registry)/ledgerwriter
@@ -46,6 +48,7 @@ spec:
     - name: build-image-transhistory
       taskRef:
         name: jib-maven
+      runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
           value: $(params.image-registry)/transactionhistory
@@ -57,6 +60,7 @@ spec:
     - name: build-image-userservice    
       taskRef:
         name: kaniko
+      runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
           value: $(params.image-registry)/userservice
@@ -70,6 +74,7 @@ spec:
     - name: build-image-contacts
       taskRef:
         name: kaniko
+      runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
           value: $(params.image-registry)/contacts
@@ -83,6 +88,7 @@ spec:
     - name: build-image-frontend
       taskRef:
         name: kaniko
+      runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
           value: $(params.image-registry)/frontend
@@ -96,6 +102,7 @@ spec:
     - name: build-image-loadgenerator
       taskRef:
         name: kaniko
+      runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
           value: $(params.image-registry)/loadgenerator
@@ -109,6 +116,7 @@ spec:
     - name: build-image-accounts-db
       taskRef:
         name: kaniko
+      runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
           value: $(params.image-registry)/accounts-db
@@ -122,6 +130,7 @@ spec:
     - name: build-image-ledger-db
       taskRef:
         name: kaniko
+      runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
           value: $(params.image-registry)/ledger-db
