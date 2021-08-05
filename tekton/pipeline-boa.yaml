@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: boa-pipeline
+  namespace: demo  
+spec:
+  params:
+    - name: image-registry
+      default: docker.io/gauravkr19
+  workspaces:
+    - name: git-source
+  tasks:
+    - name: fetch-from-git
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: https://github.com/gauravkr19/boa-google.git
+        - name: revision
+          value: master
+      workspaces:
+        - name: output
+          workspace: git-source
+    # - name: build-image-balreader
+    #   taskRef:
+    #     name: jib-maven
+    #   params:
+    #     - name: IMAGE
+    #       value: $(params.image-registry)/balreader
+    #     - name: DIRECTORY
+    #       value: ./src/balancereader/
+    #   workspaces:
+    #     - name: source
+    #       workspace: git-source                                                            
+    
