@@ -15,21 +15,21 @@ spec:
         name: git-clone
       params:
         - name: url
-          value: https://github.com/gauravkr19/boa-google.git
+          value: https://github.com/gauravkr19/boa-workflow.git
         - name: revision
           value: master
       workspaces:
         - name: output
           workspace: git-source
-    # - name: build-image-balreader
-    #   taskRef:
-    #     name: jib-maven
-    #   params:
-    #     - name: IMAGE
-    #       value: $(params.image-registry)/balreader
-    #     - name: DIRECTORY
-    #       value: ./src/balancereader/
-    #   workspaces:
-    #     - name: source
-    #       workspace: git-source                                                            
+    - name: build-image-balreader
+      taskRef:
+        name: jib-maven
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/balreader
+        - name: DIRECTORY
+          value: ./src/balancereader/
+      workspaces:
+        - name: source
+          workspace: git-source                                                            
     

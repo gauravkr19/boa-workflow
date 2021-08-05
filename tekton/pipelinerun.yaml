@@ -10,7 +10,7 @@ spec:
   - name: DIRECTORY
     value: ./src/balancereader/
   - name: url
-    value: https://github.com/gauravkr19/boa-google.git
+    value: https://github.com/gauravkr19/boa-workflow.git
   - name: revision
     value: master          
   serviceAccountName: tekton-triggers-example-sa
