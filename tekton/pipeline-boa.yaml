@@ -140,4 +140,37 @@ spec:
           value: ./src/ledger-db/Dockerfile
       workspaces:
         - name: source
-          workspace: git-source                                                      
+          workspace: git-source                                                    
+    - name: image-change-ledgerdb
+      taskRef:
+        name: app-deploy-kubectl
+      params:
+      - name: imageURL
+        value: $(params.image-registry)/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
+      - name: path
+        value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
+      - name: yqArg
+        value: "-d0"
+      - name: yamlPathToImage
+        value: "spec.template.spec.containers[0].image"
+      workspaces:
+      - name: source
+        workspace: git-source    
+    - name: gke-deploy-ledgerdb
+      taskRef:
+        name: gke-deploy
+      runAfter: [image-change-ledgerdb]      
+      params:
+        - name: ARGS
+          value:
+            - 'run'
+            - '--image=$(params.imageUrl):$(params.imageTag)'
+            - '--filename=$(workspaces.source.path)/$(params.pathToKubernetesConfigs)'
+            - '--cluster=$(params.clusterName)'
+            - '--location=$(params.clusterLocation)'
+            - '--project=$(params.clusterProject)'
+            - '--output=/var/tmp/gke-deploy'
+
+      workspaces:
+        - name: source
+          workspace: source              
