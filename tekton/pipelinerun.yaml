@@ -3,16 +3,7 @@ kind: PipelineRun
 metadata:
   name: build-image-pr
   namespace: demo
-spec:
-  params:
-  - name: IMAGE
-    value: $(params.image-registry)/balreader
-  - name: DIRECTORY
-    value: ./src/balancereader/
-  - name: url
-    value: https://github.com/gauravkr19/boa-workflow.git
-  - name: revision
-    value: master          
+spec:         
   serviceAccountName: tekton-triggers-example-sa
   pipelineRef:
     name: "boa-pipeline"

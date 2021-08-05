@@ -32,4 +32,103 @@ spec:
       workspaces:
         - name: source
           workspace: git-source                                                            
-    
+    - name: build-image-ledgerwriter
+      taskRef:
+        name: jib-maven
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/ledgerwriter
+        - name: DIRECTORY
+          value: ./src/ledgerwriter/
+      workspaces:
+        - name: source
+          workspace: git-source
+    - name: build-image-transhistory
+      taskRef:
+        name: jib-maven
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/transactionhistory
+        - name: DIRECTORY
+          value: ./src/transactionhistory
+      workspaces:
+        - name: source
+          workspace: git-source
+    - name: build-image-userservice    
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/userservice
+        - name: CONTEXT
+          value: ./src/userservice
+        - name: DOCKERFILE
+          value: ./src/userservice/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source   
+    - name: build-image-contacts
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/contacts
+        - name: CONTEXT
+          value: ./src/contacts
+        - name: DOCKERFILE
+          value: ./src/contacts/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source 
+    - name: build-image-frontend
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/frontend
+        - name: CONTEXT
+          value: ./src/frontend
+        - name: DOCKERFILE
+          value: ./src/frontend/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source
+    - name: build-image-loadgenerator
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/loadgenerator
+        - name: CONTEXT
+          value: ./src/loadgenerator
+        - name: DOCKERFILE
+          value: ./src/loadgenerator/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source    
+    - name: build-image-accounts-db
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/accounts-db
+        - name: CONTEXT
+          value: ./src/accounts-db
+        - name: DOCKERFILE
+          value: ./src/accounts-db/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source 
+    - name: build-image-ledger-db
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/ledger-db
+        - name: CONTEXT
+          value: ./src/ledger-db
+        - name: DOCKERFILE
+          value: ./src/ledger-db/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source                                                      
