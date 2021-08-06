@@ -4,7 +4,8 @@ metadata:
   name: tekton-triggers-example-sa
 secrets:
   - name: webhook-secret
-  - name: regcred  
+  - name: regcred
+  - name: gsakey-wi-secret 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role

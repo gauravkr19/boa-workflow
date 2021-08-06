@@ -133,7 +133,7 @@ spec:
       runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
-          value: $(params.image-registry)/ledger-db
+          value: gcr.io/playground-s-11-ffad36f2/ledger-db
         - name: CONTEXT
           value: ./src/ledger-db
         - name: DOCKERFILE
@@ -144,9 +144,10 @@ spec:
     - name: image-change-ledgerdb
       taskRef:
         name: app-deploy-kubectl
+      runAfter: [build-image-ledger-db]
       params:
       - name: imageURL
-        value: $(params.image-registry)/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
+        value: gcr.io/playground-s-11-ffad36f2/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
       - name: path
         value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
       - name: yqArg
@@ -164,13 +165,11 @@ spec:
         - name: ARGS
           value:
             - 'run'
-            - '--image=$(params.imageUrl):$(params.imageTag)'
-            - '--filename=$(workspaces.source.path)/$(params.pathToKubernetesConfigs)'
-            - '--cluster=$(params.clusterName)'
-            - '--location=$(params.clusterLocation)'
-            - '--project=$(params.clusterProject)'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db'
+            - '--cluster=tektoncl'
+            - '--location=us-central1-a'
+            - '--project=playground-s-11-ffad36f2'
             - '--output=/var/tmp/gke-deploy'
-
       workspaces:
         - name: source
-          workspace: source              
+          workspace: git-source              
