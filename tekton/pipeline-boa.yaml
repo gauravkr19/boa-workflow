@@ -147,7 +147,7 @@ spec:
     #   runAfter: [build-image-ledger-db]
     #   params:
     #   - name: imageURL
-    #     value: gcr.io/playground-s-11-ffad36f2/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
+    #     value: $(params.image-registry)/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
     #   - name: path
     #     value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
     #   - name: yqArg
@@ -162,11 +162,19 @@ spec:
         name: gke-deploy
       runAfter: [build-image-ledger-db]      
       params:
+        - name: imageURL
+          value: $(params.image-registry)/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
         - name: ARGS
           value:
             - 'run'
             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml'
-            - '--cluster=databasecl'
+            - '--cluster=database-cl'
             - '--location=us-central1-a'
             - '--project=playground-s-11-f6cd7801'
             - '--output=/var/tmp/gke-deploy'
