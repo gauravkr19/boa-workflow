@@ -325,7 +325,7 @@ spec:
         - name: imageURL
           value: $(params.image-registry)/ledgerwriter@$(tasks.build-image-ledgerwriter.results.IMAGE_DIGEST)
         - name: path
-          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledgerwriter.yaml
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledger-writer.yaml
         - name: yqArg
           value: "-d0"
         - name: yamlPathToImage
@@ -333,7 +333,7 @@ spec:
         - name: ARGS
           value:
             - 'run'
-            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledgerwriter.yaml'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledger-writer.yaml'
             - '--cluster=$(params.app-cluster)'
             - '--location=$(params.cluster-location)'
             - '--project=$(params.gcp-project)'
@@ -349,7 +349,7 @@ spec:
         - name: imageURL
           value: $(params.image-registry)/transactionhistory@$(tasks.build-image-transhistory.results.IMAGE_DIGEST)
         - name: path
-          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transactionhistory.yaml
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transaction-history.yaml
         - name: yqArg
           value: "-d0"
         - name: yamlPathToImage
@@ -357,7 +357,7 @@ spec:
         - name: ARGS
           value:
             - 'run'
-            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transactionhistory.yaml'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transaction-history.yaml'
             - '--cluster=$(params.app-cluster)'
             - '--location=$(params.cluster-location)'
             - '--project=$(params.gcp-project)'
