@@ -6,13 +6,13 @@ metadata:
 spec:
   params:
     - name: gcp-project
-      default: playground-s-11-f6cd7801
+      default: playground-s-11-86387f06
     - name: image-registry
-      default: gcr.io/playground-s-11-f6cd7801
+      default: gcr.io/playground-s-11-86387f06
     - name: app-cluster
-      default: tektoncl
+      default: anthos-gke-app
     - name: db-cluster
-      default: database-cl     
+      default: anthos-gke-db     
     - name: cluster-location
       default: us-central1-a
   workspaces:
