@@ -197,3 +197,172 @@ spec:
       workspaces:
         - name: source
           workspace: git-source                     
+    - name: gke-deploy-userservice
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-userservice]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/userservice@$(tasks.build-image-userservice.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/userservice.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/userservice.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-contacts
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-contacts]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/contacts@$(tasks.build-image-contacts.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/contacts.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/contacts.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-frontend
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-frontend]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/frontend@$(tasks.build-image-frontend.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/frontend.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/frontend.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-loadgenerator
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-loadgenerator]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/loadgenerator@$(tasks.build-image-loadgenerator.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/loadgenerator.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/loadgenerator.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-balreader
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-balreader]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/balreader@$(tasks.build-image-balreader.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balancereader.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balancereader.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-ledgerwriter
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-ledgerwriter]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/ledgerwriter@$(tasks.build-image-ledgerwriter.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledgerwriter.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledgerwriter.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-transhistory
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-transhistory]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/transactionhistory@$(tasks.build-image-transhistory.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transactionhistory.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transactionhistory.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+                   
