@@ -301,7 +301,7 @@ spec:
         - name: imageURL
           value: $(params.image-registry)/balreader@$(tasks.build-image-balreader.results.IMAGE_DIGEST)
         - name: path
-          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balancereader.yaml
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balance-reader.yaml
         - name: yqArg
           value: "-d0"
         - name: yamlPathToImage
@@ -309,7 +309,7 @@ spec:
         - name: ARGS
           value:
             - 'run'
-            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balancereader.yaml'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balance-reader.yaml'
             - '--cluster=$(params.app-cluster)'
             - '--location=$(params.cluster-location)'
             - '--project=$(params.gcp-project)'
