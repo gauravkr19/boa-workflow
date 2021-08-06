@@ -299,7 +299,7 @@ spec:
       runAfter: [build-image-balreader]      
       params:
         - name: imageURL
-          value: $(params.image-registry)/balreader@$(tasks.build-image-balreader.results.IMAGE-DIGEST)
+          value: $(params.image-registry)/balreader@$(tasks.build-image-balreader.results.IMAGE_DIGEST)
         - name: path
           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balancereader.yaml
         - name: yqArg
@@ -323,7 +323,7 @@ spec:
       runAfter: [build-image-ledgerwriter]      
       params:
         - name: imageURL
-          value: $(params.image-registry)/ledgerwriter@$(tasks.build-image-ledgerwriter.results.IMAGE-DIGEST)
+          value: $(params.image-registry)/ledgerwriter@$(tasks.build-image-ledgerwriter.results.IMAGE_DIGEST)
         - name: path
           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledgerwriter.yaml
         - name: yqArg
@@ -347,7 +347,7 @@ spec:
       runAfter: [build-image-transhistory]      
       params:
         - name: imageURL
-          value: $(params.image-registry)/transactionhistory@$(tasks.build-image-transhistory.results.IMAGE-DIGEST)
+          value: $(params.image-registry)/transactionhistory@$(tasks.build-image-transhistory.results.IMAGE_DIGEST)
         - name: path
           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transactionhistory.yaml
         - name: yqArg
