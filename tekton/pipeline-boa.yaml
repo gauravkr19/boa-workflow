@@ -165,8 +165,8 @@ spec:
         - name: ARGS
           value:
             - 'run'
-            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db'
-            - '--cluster=tektoncl'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml'
+            - '--cluster=databasecl'
             - '--location=us-central1-a'
             - '--project=playground-s-11-ffad36f2'
             - '--output=/var/tmp/gke-deploy'
