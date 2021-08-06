@@ -6,7 +6,7 @@ metadata:
 spec:
   params:
     - name: image-registry
-      default: docker.io/gauravkr19
+      default: gcr.io/playground-s-11-f6cd7801
   workspaces:
     - name: git-source
   tasks:
@@ -133,7 +133,7 @@ spec:
       runAfter: [fetch-from-git]        
       params:
         - name: IMAGE
-          value: gcr.io/playground-s-11-ffad36f2/ledger-db
+          value: $(params.image-registry)/ledger-db
         - name: CONTEXT
           value: ./src/ledger-db
         - name: DOCKERFILE
@@ -141,26 +141,26 @@ spec:
       workspaces:
         - name: source
           workspace: git-source                                                    
-    - name: image-change-ledgerdb
-      taskRef:
-        name: app-deploy-kubectl
-      runAfter: [build-image-ledger-db]
-      params:
-      - name: imageURL
-        value: gcr.io/playground-s-11-ffad36f2/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
-      - name: path
-        value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
-      - name: yqArg
-        value: "-d0"
-      - name: yamlPathToImage
-        value: "spec.template.spec.containers[0].image"
-      workspaces:
-      - name: source
-        workspace: git-source    
+    # - name: image-change-ledgerdb
+    #   taskRef:
+    #     name: app-deploy-kubectl
+    #   runAfter: [build-image-ledger-db]
+    #   params:
+    #   - name: imageURL
+    #     value: gcr.io/playground-s-11-ffad36f2/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
+    #   - name: path
+    #     value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
+    #   - name: yqArg
+    #     value: "-d0"
+    #   - name: yamlPathToImage
+    #     value: "spec.template.spec.containers[0].image"
+    #   workspaces:
+    #   - name: source
+    #     workspace: git-source    
     - name: gke-deploy-ledgerdb
       taskRef:
         name: gke-deploy
-      runAfter: [image-change-ledgerdb]      
+      runAfter: [build-image-ledger-db]      
       params:
         - name: ARGS
           value:
@@ -168,7 +168,7 @@ spec:
             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml'
             - '--cluster=databasecl'
             - '--location=us-central1-a'
-            - '--project=playground-s-11-ffad36f2'
+            - '--project=playground-s-11-f6cd7801'
             - '--output=/var/tmp/gke-deploy'
       workspaces:
         - name: source
