@@ -5,8 +5,16 @@ metadata:
   namespace: demo  
 spec:
   params:
+    - name: gcp-project
+      default: playground-s-11-f6cd7801
     - name: image-registry
       default: gcr.io/playground-s-11-f6cd7801
+    - name: app-cluster
+      default: tektoncl
+    - name: db-cluster
+      default: database-cl     
+    - name: cluster-location
+      default: us-central1-a
   workspaces:
     - name: git-source
   tasks:
@@ -140,23 +148,7 @@ spec:
           value: ./src/ledger-db/Dockerfile
       workspaces:
         - name: source
-          workspace: git-source                                                    
-    # - name: image-change-ledgerdb
-    #   taskRef:
-    #     name: app-deploy-kubectl
-    #   runAfter: [build-image-ledger-db]
-    #   params:
-    #   - name: imageURL
-    #     value: $(params.image-registry)/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
-    #   - name: path
-    #     value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
-    #   - name: yqArg
-    #     value: "-d0"
-    #   - name: yamlPathToImage
-    #     value: "spec.template.spec.containers[0].image"
-    #   workspaces:
-    #   - name: source
-    #     workspace: git-source    
+          workspace: git-source                                                        
     - name: gke-deploy-ledgerdb
       taskRef:
         name: gke-deploy
@@ -174,10 +166,34 @@ spec:
           value:
             - 'run'
             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml'
-            - '--cluster=database-cl'
-            - '--location=us-central1-a'
-            - '--project=playground-s-11-f6cd7801'
+            - '--cluster=$(params.db-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
             - '--output=/var/tmp/gke-deploy'
       workspaces:
         - name: source
-          workspace: git-source              
+          workspace: git-source    
+    - name: gke-deploy-accountdb
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-accounts-db]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/accounts-db@$(tasks.build-image-accounts-db.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/accounts-db.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/accounts-db.yaml'
+            - '--cluster=$(params.db-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
