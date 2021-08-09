@@ -6,15 +6,15 @@ metadata:
 spec:
   params:
     - name: gcp-project
-      default: playground-s-11-86387f06
+      default: bcm-pcidss-devops-gaurav
     - name: image-registry
-      default: gcr.io/playground-s-11-86387f06
+      default: gcr.io/bcm-pcidss-devops-gaurav
     - name: app-cluster
       default: anthos-gke-app
     - name: db-cluster
       default: anthos-gke-db     
     - name: cluster-location
-      default: us-central1-a
+      default: us-east4
   workspaces:
     - name: git-source
   tasks:
