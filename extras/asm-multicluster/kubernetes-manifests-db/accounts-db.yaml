@@ -62,26 +62,6 @@ spec:
         emptyDir: {}
 ---
 apiVersion: v1
-kind: Service
-metadata:
-  name: accounts-db
-  annotations:
-      cloud.google.com/load-balancer-type: "Internal"
-  labels:
-    app: accounts-db
-    tier: db
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 5432
-      name: tcp
-      targetPort: 5432
-      protocol: TCP
-  selector:
-    app: accounts-db
-    tier: db
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: accounts-db-config

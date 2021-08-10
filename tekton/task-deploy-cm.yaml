@@ -1,0 +1,89 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: update-configmap
+  labels:
+    app.kubernetes.io/version: "0.1"
+spec:
+  description: >-
+    This Task updates the configmap with ILB IP and deployes into the Cluster.
+
+  workspaces: 
+  - name: source
+  params:
+  - name: project
+    description: The GCP Project where configmap will be deployed
+  - name: region
+    description: Region where this configmap will be deployed
+  - name: cluster
+    description: The the cluster to which this cm will be deployed, apps cluster
+  - name: db-cluster
+    description: The cluster which needs kubeconfig to retrieve ILB IP, database cluster   
+  - name: namespace
+    description: The the namespace to which this cm will be deployed 
+  # - name: kubeconfig
+  #   description: The the kubeconfig file of the cluster where cm will be deployed 
+  - name: ARGS
+    type: array
+    description: gke-deploy CLI arguments to run
+    default: ["--help"]      
+  steps:  
+  - name: create-kubeconfig
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk
+    workingDir: $(workspaces.source.path)
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        GET_CMD="gcloud container clusters describe '$(params.db-cluster)' --zone='$(params.region)'"
+
+        # ENDPOINT=$(eval "$GET_CMD --format='value(endpoint)'")
+        # CACERT="$(eval "$GET_CMD --format='value(masterAuth.clusterCaCertificate)'")"
+        # sed "s/CLUSTER-ENDPOINT/${ENDPOINT}/g"  $(workspaces.source.path)/tekton/kubeconfig.yaml
+        # sed "s/CA-CERTIFICATE/${CACERT}/g"  $(workspaces.source.path)/tekton/kubeconfig.yaml
+
+        cat > $(workspaces.source.path)/kubeconfig.yaml <<EOF
+        apiVersion: v1
+        kind: Config
+        current-context: my-cluster
+        contexts: [{name: my-cluster, context: {cluster: cluster-1, user: user-1}}]
+        users: [{name: user-1, user: {auth-provider: {name: gcp}}}]
+        clusters:
+        - name: cluster-1
+          cluster:
+            server: "https://$(eval "$GET_CMD --format='value(endpoint)'")"
+            certificate-authority-data: "$(eval "$GET_CMD --format='value(masterAuth.clusterCaCertificate)'")"
+        EOF
+        sed -i 's/EOF//g' $(workspaces.source.path)/kubeconfig.yaml
+  - name: update-cm-accounts
+    image: gauravkr19/kubectl
+    workingDir: $(workspaces.source.path)
+    command: ["/bin/sh", "-c"]
+    args:
+      - |      
+        while true
+        do
+        if [[ $(kubectl --kubeconfig=$(workspaces.source.path)/kubeconfig.yaml -n $(params.namespace) get svc accounts-db -o jsonpath="{ .status.loadBalancer.ingress[0].ip}") != "" ]]; then
+          break
+        fi
+        done
+        accounts_db_ip=$(kubectl --kubeconfig=$(workspaces.source.path)/kubeconfig.yaml -n $(params.namespace) get svc accounts-db -o jsonpath="{ .status.loadBalancer.ingress[0].ip}")
+        sed -i "s/ACCOUNTS_DB_IP/${accounts_db_ip}/g"  $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/config.yaml
+  - name: update-cm-ledger
+    image: gauravkr19/kubectl
+    workingDir: $(workspaces.source.path)
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        while true
+        do
+        if [[ $(kubectl --kubeconfig=$(workspaces.source.path)/kubeconfig.yaml -n $(params.namespace) get svc ledger-db -o jsonpath="{ .status.loadBalancer.ingress[0].ip}") != "" ]]; then
+          break
+        fi
+        done
+        ledger_db_ip=$(kubectl --kubeconfig=$(workspaces.source.path)/kubeconfig.yaml -n $(params.namespace) get svc ledger-db -o jsonpath="{ .status.loadBalancer.ingress[0].ip}")
+        sed -i "s/LEDGER_DB_IP/${ledger_db_ip}/g"   $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/config.yaml
+  - name: gke-deploy
+    image: gcr.io/cloud-builders/gke-deploy@sha256:6d18a1efabf8a7ea7f2169c93f3e01fc5b8247b12099618c496ab097aaae341f
+    command: ["/gke-deploy"]
+    workingDir: $(workspaces.source.path)
+    args: ["$(params.ARGS)"]

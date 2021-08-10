@@ -51,7 +51,7 @@ data:
   POSTGRES_DB: accounts-db
   POSTGRES_USER: accounts-admin
   POSTGRES_PASSWORD: accounts-pwd
-  ACCOUNTS_DB_URI: postgresql://accounts-admin:accounts-pwd@10.16.0.4:5432/accounts-db
+  ACCOUNTS_DB_URI: postgresql://accounts-admin:accounts-pwd@ACCOUNTS_DB_IP:5432/accounts-db
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -63,6 +63,6 @@ data:
   POSTGRES_DB: postgresdb
   POSTGRES_USER: admin
   POSTGRES_PASSWORD: password
-  SPRING_DATASOURCE_URL: jdbc:postgresql://10.16.0.5:5432/postgresdb
+  SPRING_DATASOURCE_URL: jdbc:postgresql://LEDGER_DB_IP:5432/postgresdb
   SPRING_DATASOURCE_USERNAME: admin # should match POSTGRES_USER
   SPRING_DATASOURCE_PASSWORD: password # should match POSTGRES_PASSWORD
