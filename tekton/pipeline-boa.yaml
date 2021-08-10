@@ -81,16 +81,16 @@ spec:
         name: object-deploy
       runAfter: [fetch-from-git]    
       params:
-      - name: project
-        value: $(params.gcp-project)
-      - name: region
-        value: $(params.cluster-location)
-      - name: cluster
-        value: $(params.app-cluster)
-      - name: db-cluster
-        value: $(params.db-cluster)        
-      - name: namespace
-        value: $(params.namespace)
+      # - name: project
+      #   value: $(params.gcp-project)
+      # - name: region
+      #   value: $(params.cluster-location)
+      # - name: cluster
+      #   value: $(params.app-cluster)
+      # - name: db-cluster
+      #   value: $(params.db-cluster)        
+      # - name: namespace
+      #   value: $(params.namespace)
       - name: ARGS
         value:
           - 'run'
