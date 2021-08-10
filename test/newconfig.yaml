@@ -1,0 +1,21 @@
+apiVersion: v1
+clusters:
+- cluster:
+    server: https://34.145.144.219
+  name: cluster-1
+contexts:
+- context:
+    cluster: cluster-1
+    user: user-1
+  name: my-cluster
+current-context: my-cluster
+kind: Config
+preferences: {}
+users:
+- name: user-1
+  user:
+    auth-provider:
+      config:
+        access-token: ya29.c.KtsCCwjHUf8m5kjD7RNkHpg-EwTct41jzw6YCRhTy2Z2tU3oww4dBrXTAHtddSznxklEM3i7zSW3IyIMY-5ThiHeoEmn-vGE30I6Oa4jTTLYXmHNXiF5ZyKL_qZktCzc3sVI3X55kY8sTryl__FZcAzdZehyvTtrlgeKGDVMhOtvxW_ZWk5WGv7mz2u86CLMtgFupvapfhLuO14CPRws0ESYchZ8-qc2sH2z9Sfkqgws_fup-p62gVWI8ZQGlOkm6VPdBptB_Mw4clIvu796YAR92qfr0F-wPMLCotC1_MJP3sIjXz22bziIJru7koazEQSOWhGj2j5Sl6EO9_bC6qxZ3weCZrH3vUkU6ooB-FuOg3VOEuTXUzeYnBhiqon_gTRSOrOHmbSnrrNR3ww-BEo9PRxGIcStm4vNPJhJjZjmLSrBKDKgf7CJWe_HE28-49amgiUtzLj70isJ3Ec
+        expiry: "2021-08-10T16:48:06.450919096Z"
+      name: gcp

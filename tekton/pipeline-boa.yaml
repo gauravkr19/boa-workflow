@@ -36,7 +36,7 @@ spec:
 # New Task Start 
     - name: deploy-db-svcs
       taskRef:
-        name: svc-deploy
+        name: object-deploy
       runAfter: [fetch-from-git]      
       params:
         - name: ARGS
@@ -78,7 +78,7 @@ spec:
           workspace: git-source 
     - name: deploy-configmaps-db
       taskRef:
-        name: update-configmap
+        name: object-deploy
       runAfter: [fetch-from-git]    
       params:
       - name: project
@@ -105,340 +105,340 @@ spec:
 # New Task End
 # New Task End
 # New Task End          
-#     - name: build-image-balreader
-#       taskRef:
-#         name: jib-maven
-#       runAfter: [fetch-from-git]
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/balreader
-#         - name: DIRECTORY
-#           value: ./src/balancereader/
-#       workspaces:
-#         - name: source
-#           workspace: git-source                                                            
-#     - name: build-image-ledgerwriter
-#       taskRef:
-#         name: jib-maven
-#       runAfter: [fetch-from-git]        
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/ledgerwriter
-#         - name: DIRECTORY
-#           value: ./src/ledgerwriter/
-#       workspaces:
-#         - name: source
-#           workspace: git-source
-#     - name: build-image-transhistory
-#       taskRef:
-#         name: jib-maven
-#       runAfter: [fetch-from-git]        
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/transactionhistory
-#         - name: DIRECTORY
-#           value: ./src/transactionhistory
-#       workspaces:
-#         - name: source
-#           workspace: git-source
-#     - name: build-image-userservice    
-#       taskRef:
-#         name: kaniko
-#       runAfter: [fetch-from-git]        
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/userservice
-#         - name: CONTEXT
-#           value: ./src/userservice
-#         - name: DOCKERFILE
-#           value: ./src/userservice/Dockerfile
-#       workspaces:
-#         - name: source
-#           workspace: git-source   
-#     - name: build-image-contacts
-#       taskRef:
-#         name: kaniko
-#       runAfter: [fetch-from-git]        
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/contacts
-#         - name: CONTEXT
-#           value: ./src/contacts
-#         - name: DOCKERFILE
-#           value: ./src/contacts/Dockerfile
-#       workspaces:
-#         - name: source
-#           workspace: git-source 
-#     - name: build-image-frontend
-#       taskRef:
-#         name: kaniko
-#       runAfter: [fetch-from-git]        
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/frontend
-#         - name: CONTEXT
-#           value: ./src/frontend
-#         - name: DOCKERFILE
-#           value: ./src/frontend/Dockerfile
-#       workspaces:
-#         - name: source
-#           workspace: git-source
-#     - name: build-image-loadgenerator
-#       taskRef:
-#         name: kaniko
-#       runAfter: [fetch-from-git]        
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/loadgenerator
-#         - name: CONTEXT
-#           value: ./src/loadgenerator
-#         - name: DOCKERFILE
-#           value: ./src/loadgenerator/Dockerfile
-#       workspaces:
-#         - name: source
-#           workspace: git-source    
-#     - name: build-image-accounts-db
-#       taskRef:
-#         name: kaniko
-#       runAfter: [fetch-from-git]        
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/accounts-db
-#         - name: CONTEXT
-#           value: ./src/accounts-db
-#         - name: DOCKERFILE
-#           value: ./src/accounts-db/Dockerfile
-#       workspaces:
-#         - name: source
-#           workspace: git-source 
-#     - name: build-image-ledger-db
-#       taskRef:
-#         name: kaniko
-#       runAfter: [fetch-from-git]        
-#       params:
-#         - name: IMAGE
-#           value: $(params.image-registry)/ledger-db
-#         - name: CONTEXT
-#           value: ./src/ledger-db
-#         - name: DOCKERFILE
-#           value: ./src/ledger-db/Dockerfile
-#       workspaces:
-#         - name: source
-#           workspace: git-source                                                        
-#     - name: gke-deploy-ledgerdb
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [build-image-ledger-db]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml'
-#             - '--cluster=$(params.db-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source   
-#     - name: gke-deploy-accountdb
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [build-image-accounts-db]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/accounts-db@$(tasks.build-image-accounts-db.results.IMAGE-DIGEST)
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/accounts-db.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/accounts-db.yaml'
-#             - '--cluster=$(params.db-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source 
-# ##########
-#     - name: gke-deploy-userservice
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [deploy-configmaps-apps]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/userservice@$(tasks.build-image-userservice.results.IMAGE-DIGEST)
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/userservice.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/userservice.yaml'
-#             - '--cluster=$(params.app-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source                     
-#     - name: gke-deploy-contacts
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [deploy-configmaps-apps]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/contacts@$(tasks.build-image-contacts.results.IMAGE-DIGEST)
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/contacts.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/contacts.yaml'
-#             - '--cluster=$(params.app-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source                     
-#     - name: gke-deploy-frontend
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [deploy-configmaps-apps]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/frontend@$(tasks.build-image-frontend.results.IMAGE-DIGEST)
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/frontend.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/frontend.yaml'
-#             - '--cluster=$(params.app-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source                     
-#     - name: gke-deploy-loadgenerator
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [deploy-configmaps-apps]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/loadgenerator@$(tasks.build-image-loadgenerator.results.IMAGE-DIGEST)
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/loadgenerator.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/loadgenerator.yaml'
-#             - '--cluster=$(params.app-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source                     
-#     - name: gke-deploy-balreader
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [deploy-configmaps-apps]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/balreader
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balance-reader.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balance-reader.yaml'
-#             - '--cluster=$(params.app-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source                     
-#     - name: gke-deploy-ledgerwriter
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [deploy-configmaps-apps]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/ledgerwriter
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledger-writer.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledger-writer.yaml'
-#             - '--cluster=$(params.app-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source                     
-#     - name: gke-deploy-transhistory
-#       taskRef:
-#         name: gke-deploy
-#       runAfter: [deploy-configmaps-apps]      
-#       params:
-#         - name: imageURL
-#           value: $(params.image-registry)/transactionhistory
-#         - name: path
-#           value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transaction-history.yaml
-#         - name: yqArg
-#           value: "-d0"
-#         - name: yamlPathToImage
-#           value: "spec.template.spec.containers[0].image"
-#         - name: ARGS
-#           value:
-#             - 'run'
-#             - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transaction-history.yaml'
-#             - '--cluster=$(params.app-cluster)'
-#             - '--location=$(params.cluster-location)'
-#             - '--project=$(params.gcp-project)'
-#             - '--output=/var/tmp/gke-deploy'
-#       workspaces:
-#         - name: source
-#           workspace: git-source                                                           
+    - name: build-image-balreader
+      taskRef:
+        name: jib-maven
+      runAfter: [fetch-from-git]
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/balreader
+        - name: DIRECTORY
+          value: ./src/balancereader/
+      workspaces:
+        - name: source
+          workspace: git-source                                                            
+    - name: build-image-ledgerwriter
+      taskRef:
+        name: jib-maven
+      runAfter: [fetch-from-git]        
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/ledgerwriter
+        - name: DIRECTORY
+          value: ./src/ledgerwriter/
+      workspaces:
+        - name: source
+          workspace: git-source
+    - name: build-image-transhistory
+      taskRef:
+        name: jib-maven
+      runAfter: [fetch-from-git]        
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/transactionhistory
+        - name: DIRECTORY
+          value: ./src/transactionhistory
+      workspaces:
+        - name: source
+          workspace: git-source
+    - name: build-image-userservice    
+      taskRef:
+        name: kaniko
+      runAfter: [fetch-from-git]        
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/userservice
+        - name: CONTEXT
+          value: ./src/userservice
+        - name: DOCKERFILE
+          value: ./src/userservice/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source   
+    - name: build-image-contacts
+      taskRef:
+        name: kaniko
+      runAfter: [fetch-from-git]        
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/contacts
+        - name: CONTEXT
+          value: ./src/contacts
+        - name: DOCKERFILE
+          value: ./src/contacts/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source 
+    - name: build-image-frontend
+      taskRef:
+        name: kaniko
+      runAfter: [fetch-from-git]        
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/frontend
+        - name: CONTEXT
+          value: ./src/frontend
+        - name: DOCKERFILE
+          value: ./src/frontend/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source
+    - name: build-image-loadgenerator
+      taskRef:
+        name: kaniko
+      runAfter: [fetch-from-git]        
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/loadgenerator
+        - name: CONTEXT
+          value: ./src/loadgenerator
+        - name: DOCKERFILE
+          value: ./src/loadgenerator/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source    
+    - name: build-image-accounts-db
+      taskRef:
+        name: kaniko
+      runAfter: [fetch-from-git]        
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/accounts-db
+        - name: CONTEXT
+          value: ./src/accounts-db
+        - name: DOCKERFILE
+          value: ./src/accounts-db/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source 
+    - name: build-image-ledger-db
+      taskRef:
+        name: kaniko
+      runAfter: [fetch-from-git]        
+      params:
+        - name: IMAGE
+          value: $(params.image-registry)/ledger-db
+        - name: CONTEXT
+          value: ./src/ledger-db
+        - name: DOCKERFILE
+          value: ./src/ledger-db/Dockerfile
+      workspaces:
+        - name: source
+          workspace: git-source                                                        
+    - name: gke-deploy-ledgerdb
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-ledger-db]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/ledger-db@$(tasks.build-image-ledger-db.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/ledger-db.yaml'
+            - '--cluster=$(params.db-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source   
+    - name: gke-deploy-accountdb
+      taskRef:
+        name: gke-deploy
+      runAfter: [build-image-accounts-db]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/accounts-db@$(tasks.build-image-accounts-db.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/accounts-db.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests-db/accounts-db.yaml'
+            - '--cluster=$(params.db-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source 
+##########
+    - name: gke-deploy-userservice
+      taskRef:
+        name: gke-deploy
+      runAfter: [deploy-configmaps-apps]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/userservice@$(tasks.build-image-userservice.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/userservice.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/userservice.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-contacts
+      taskRef:
+        name: gke-deploy
+      runAfter: [deploy-configmaps-apps]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/contacts@$(tasks.build-image-contacts.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/contacts.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/contacts.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-frontend
+      taskRef:
+        name: gke-deploy
+      runAfter: [deploy-configmaps-apps]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/frontend@$(tasks.build-image-frontend.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/frontend.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/frontend.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-loadgenerator
+      taskRef:
+        name: gke-deploy
+      runAfter: [deploy-configmaps-apps]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/loadgenerator@$(tasks.build-image-loadgenerator.results.IMAGE-DIGEST)
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/loadgenerator.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/loadgenerator.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-balreader
+      taskRef:
+        name: gke-deploy
+      runAfter: [deploy-configmaps-apps]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/balreader
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balance-reader.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/balance-reader.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-ledgerwriter
+      taskRef:
+        name: gke-deploy
+      runAfter: [deploy-configmaps-apps]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/ledgerwriter
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledger-writer.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/ledger-writer.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                     
+    - name: gke-deploy-transhistory
+      taskRef:
+        name: gke-deploy
+      runAfter: [deploy-configmaps-apps]      
+      params:
+        - name: imageURL
+          value: $(params.image-registry)/transactionhistory
+        - name: path
+          value: $(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transaction-history.yaml
+        - name: yqArg
+          value: "-d0"
+        - name: yamlPathToImage
+          value: "spec.template.spec.containers[0].image"
+        - name: ARGS
+          value:
+            - 'run'
+            - '--filename=$(workspaces.source.path)/extras/asm-multicluster/kubernetes-manifests/transaction-history.yaml'
+            - '--cluster=$(params.app-cluster)'
+            - '--location=$(params.cluster-location)'
+            - '--project=$(params.gcp-project)'
+            - '--output=/var/tmp/gke-deploy'
+      workspaces:
+        - name: source
+          workspace: git-source                                                           
