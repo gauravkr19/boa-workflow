@@ -6,15 +6,15 @@ metadata:
 spec:
   params:
     - name: gcp-project
-      default: bcm-pcidss-devops-gaurav
+      default: cogent-chess-324806
     - name: image-registry
-      default: gcr.io/bcm-pcidss-devops-gaurav
+      default: gcr.io/cogent-chess-324806
     - name: app-cluster
       default: anthos-gke-app
     - name: db-cluster
       default: anthos-gke-db     
     - name: cluster-location
-      default: us-east4
+      default: us-central1-a
     - name: namespace
       default: default
   workspaces:
@@ -31,7 +31,7 @@ spec:
       workspaces:
         - name: output
           workspace: git-source
-# New Task Start 
+# New Task Start - Deploy DB services first to create ILB IP
 # New Task Start 
 # New Task Start 
     - name: deploy-db-svcs

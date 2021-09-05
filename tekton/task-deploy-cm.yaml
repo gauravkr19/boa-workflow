@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/version: "0.1"
 spec:
   description: >-
-    This Task updates the configmap with ILB IP and deployes into the Cluster.
+    This Task updates the configmap with ILB IP and deploys into the Cluster.
 
   workspaces: 
   - name: source
